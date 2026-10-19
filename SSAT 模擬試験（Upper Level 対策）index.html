@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>SSAT 模擬試験（Upper Level 対策）</title>
+<style>
+  :root{
+    --navy:#1f3a5f; --navy2:#2c5282; --bg:#f4f6f9; --card:#fff; --line:#d5dbe3;
+    --text:#1f2933; --muted:#5f6b7a; --ok:#1e8e3e; --ng:#d93025; --warn:#e37400;
+    --sel:#e3edfb; --selb:#2c5282; --hl:#fff176;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font-family:"Helvetica Neue",Arial,"Hiragino Kaku Gothic ProN","Noto Sans JP",Meiryo,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+  button{font:inherit;cursor:pointer}
+  a{color:var(--navy2)}
+  /* top nav */
+  #topbar{background:var(--navy);color:#fff;display:flex;align-items:center;gap:8px;padding:0 16px;height:52px;position:sticky;top:0;z-index:20}
+  #topbar .brand{font-weight:700;margin-right:16px;white-space:nowrap}
+  #topbar nav{display:flex;gap:4px;overflow-x:auto}
+  #topbar nav a{color:#dbe6f5;text-decoration:none;padding:6px 12px;border-radius:6px;white-space:nowrap;font-size:14px}
+  #topbar nav a.active,#topbar nav a:hover{background:rgba(255,255,255,.15);color:#fff}
+  body.in-exam #topbar{display:none}
+  main{max-width:1000px;margin:0 auto;padding:24px 16px 80px}
+  body.in-exam main{max-width:none;padding:0}
+  h1{font-size:24px;margin:0 0 8px} h2{font-size:20px;margin:28px 0 12px} h3{font-size:17px;margin:20px 0 8px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px;margin:14px 0}
+  .muted{color:var(--muted)} .small{font-size:13px}
+  .btn{background:var(--navy2);color:#fff;border:0;border-radius:8px;padding:10px 18px;font-weight:600}
+  .btn:hover{filter:brightness(1.1)}
+  .btn.sec{background:#fff;color:var(--navy2);border:1px solid var(--navy2)}
+  .btn.danger{background:#fff;color:var(--ng);border:1px solid var(--ng)}
+  .btn.big{padding:14px 26px;font-size:17px}
+  .btn:disabled{opacity:.4;cursor:default}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+  table{border-collapse:collapse;width:100%;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+  th{background:#eef2f7}
+  td.l,th.l{text-align:left}
+  .tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:10px;background:#eef2f7;color:var(--muted);margin-right:4px}
+  .tag.ok{background:#e6f4ea;color:var(--ok)} .tag.ng{background:#fce8e6;color:var(--ng)} .tag.om{background:#fef7e0;color:var(--warn)}
+  .frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 3px;line-height:1.25}
+  .frac>span:first-child{border-bottom:1.5px solid currentColor;padding:0 3px}
+  .bar{height:12px;background:#e8ecf1;border-radius:6px;overflow:hidden;min-width:80px}
+  .bar>div{height:100%;background:var(--navy2)}
+  input[type=text]{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:6px;width:260px;max-width:100%}
+
+  /* ===== exam (CBT-like) ===== */
+  .exam{display:flex;flex-direction:column;height:100vh}
+  .examhead{background:var(--navy);color:#fff;display:flex;align-items:center;gap:14px;padding:8px 16px;flex-wrap:wrap}
+  .examhead .sec{font-weight:700}
+  .examhead .qpos{opacity:.9}
+  .examhead .sp{flex:1}
+  .timer{font-family:Menlo,Consolas,monospace;font-size:20px;font-weight:700;background:rgba(255,255,255,.12);padding:2px 12px;border-radius:6px;min-width:90px;text-align:center}
+  .timer.warn{background:var(--warn)} .timer.crit{background:var(--ng)}
+  .hbtn{background:transparent;border:1px solid rgba(255,255,255,.5);color:#fff;border-radius:6px;padding:4px 10px;font-size:13px}
+  .exambody{flex:1;display:flex;min-height:0;background:#fff}
+  .pane{overflow:auto;padding:24px 32px}
+  .passage{flex:1;border-right:4px solid var(--line);background:#fcfcfa}
+  .passage p{font-size:16.5px;line-height:1.9}
+  .passage mark{background:var(--hl);padding:0}
+  .qpane{flex:1;max-width:900px;margin:0 auto;width:100%}
+  .split .qpane{max-width:none;margin:0}
+  .partlabel{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+  .directions{font-size:13.5px;color:var(--muted);background:#f6f8fb;border-left:3px solid var(--line);padding:8px 12px;margin:8px 0 16px}
+  .qnum{font-weight:700;color:var(--navy2);margin:6px 0}
+  .prompt{font-size:18px;margin-bottom:18px}
+  .prompt .word{font-size:26px;font-weight:700;letter-spacing:.04em}
+  .choice{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:8px;padding:12px 14px;margin:9px 0;cursor:pointer;user-select:none;background:#fff;font-size:17px}
+  .choice:hover{border-color:#9fb3cc}
+  .choice .letter{flex:none;width:30px;height:30px;border-radius:50%;border:1.5px solid #8b98a8;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+  .choice.sel{background:var(--sel);border-color:var(--selb)}
+  .choice.sel .letter{background:var(--selb);border-color:var(--selb);color:#fff}
+  .choice .ctext{flex:1}
+  .choice.elim .ctext{text-decoration:line-through;color:#a0a8b3}
+  .choice .x{flex:none;border:0;background:transparent;color:#a0a8b3;font-size:16px;padding:2px 6px;border-radius:4px}
+  .choice .x:hover{background:#f1f3f4;color:var(--ng)}
+  .confrow{margin-top:20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+  .confrow button{border:1px solid var(--line);background:#fff;border-radius:6px;padding:4px 14px}
+  .confrow button.on{background:var(--navy2);color:#fff;border-color:var(--navy2)}
+  .examfoot{display:flex;gap:10px;align-items:center;padding:10px 16px;border-top:1px solid var(--line);background:#f1f4f8;flex-wrap:wrap}
+  .examfoot .sp{flex:1}
+  .flagbtn.on{background:#fef7e0;color:var(--warn);border-color:var(--warn)}
+  .center-card{max-width:760px;margin:40px auto;padding:0 16px}
+  .hlpop{position:fixed;z-index:50;background:var(--navy);color:#fff;border:0;border-radius:6px;padding:6px 12px;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+  textarea.essay{width:100%;min-height:52vh;font:16px/1.7 Georgia,"Times New Roman",serif;padding:16px;border:1px solid var(--line);border-radius:8px;resize:vertical}
+  .pausecover{position:fixed;inset:0;background:rgba(31,58,95,.97);color:#fff;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+  /* modal */
+  #modal .back{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:70;display:flex;align-items:center;justify-content:center;padding:16px}
+  #modal .box{background:#fff;border-radius:10px;padding:22px;max-width:620px;width:100%;max-height:90vh;overflow:auto}
+  .navgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px;margin:14px 0}
+  .navgrid button{border:1.5px solid var(--line);background:#fff;border-radius:6px;padding:8px 0;font-weight:600;position:relative}
+  .navgrid button.ans{background:var(--sel);border-color:var(--selb)}
+  .navgrid button.cur{outline:3px solid var(--warn)}
+  .navgrid button .f{position:absolute;top:-6px;right:-4px;font-size:13px}
+  /* review cards */
+  .qcard{border:1px solid var(--line);border-radius:10px;background:#fff;margin:10px 0;overflow:hidden}
+  .qcard>summary{list-style:none;cursor:pointer;padding:12px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .qcard>summary::-webkit-details-marker{display:none}
+  .qcard[open]>summary{border-bottom:1px solid var(--line);background:#fafbfc}
+  .qcard .body{padding:14px 18px}
+  .qcard .rchoice{padding:6px 10px;border-radius:6px;margin:4px 0;border:1px solid transparent}
+  .qcard .rchoice.correct{background:#e6f4ea;border-color:#a8dab5}
+  .qcard .rchoice.wrong{background:#fce8e6;border-color:#f4b6b0}
+  .expl{background:#f6f8fb;border-left:4px solid var(--navy2);padding:10px 14px;margin-top:12px;border-radius:4px}
+  .filters button{border:1px solid var(--line);background:#fff;border-radius:16px;padding:4px 14px;margin:3px 2px;font-size:14px}
+  .filters button.on{background:var(--navy2);color:#fff;border-color:var(--navy2)}
+  .passbox{background:#fcfcfa;border:1px solid var(--line);border-radius:6px;padding:10px 14px;font-size:14.5px;margin-bottom:10px}
+  .kpi{display:flex;gap:14px;flex-wrap:wrap}
+  .kpi>div{flex:1;min-width:140px;background:#f6f8fb;border-radius:8px;padding:12px 14px}
+  .kpi b{display:block;font-size:24px;color:var(--navy)}
+  @media (max-width:760px){
+    .exambody.split{flex-direction:column}
+    .passage{border-right:0;border-bottom:4px solid var(--line);max-height:45vh}
+    .pane{padding:16px}
+  }
+</style>
+</head>
+<body>
+<header id="topbar">
+  <div class="brand">📝 SSAT 模擬試験</div>
+  <nav>
+    <a href="#/home" data-r="home">模試を受ける</a>
+    <a href="#/history" data-r="history">テスト結果・解説</a>
+    <a href="#/review" data-r="review">問題と解説一覧</a>
+    <a href="#/guide" data-r="guide">本番情報</a>
+  </nav>
+</header>
+<main id="app"></main>
+<div id="modal"></div>
+
+<script>
+/* =====================================================================
+ *  DATA  (出典: SSAT問題集 ver. 1)
+ * ===================================================================== */
+const F = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const L = ['A','B','C','D','E'];
+
+const SECTION_INFO = {
+  verbal:  {name:'Verbal Section', jp:'語彙・類推', time:12,
+            directions:'<b>Part A: Synonyms</b> — Each of the following questions consists of one word in capital letters followed by five words or phrases. Select the one word or phrase whose meaning is closest to the word in capital letters.<br><b>Part B: Analogies</b> — The following questions ask you to find relationships between words. For each question, select the answer choice that best completes the meaning of the sentence.'},
+  quant:   {name:'Quantitative (Math) Section', jp:'数学', time:20,
+            directions:'Solve each problem and select the one correct answer from the five choices given. (Note: Calculators are NOT permitted on the SSAT.)'},
+  reading: {name:'Reading Section', jp:'長文読解', time:20,
+            directions:'Read each passage carefully and answer the questions that follow based on what is stated or implied in the passage.'},
+  writing: {name:'Writing Sample', jp:'エッセイ', time:25,
+            directions:'Choose ONE of the two prompts below and write a well-organized essay (Introduction, Body Paragraphs, Conclusion). Although the Writing Sample is not scored, a copy is sent directly to the admissions office of the schools to which you apply.'}
+};
+const PART_DIR = {
+  'Synonyms':'Select the one word or phrase whose meaning is closest to the word in capital letters.',
+  'Analogies':'Select the answer choice that best completes the meaning of the sentence.'
+};
+
+const PASSAGES = {
+  p1:{title:'Passage 1: Architecture & Society', jp:'都市建築とバイオフィリック・デザイン', html:`<p>For decades, urban architecture treated nature as an ornamental afterthought—a row of neatly trimmed shrubs beside a concrete lobby or a solitary tree confined to a sidewalk planter. In recent years, however, a paradigm shift known as <i>biophilic design</i> has begun to reshape city skylines. Rather than merely decorating steel-and-glass towers with greenery, biophilic architects weave living ecosystems directly into the structural fabric of buildings. Vertical forests, daylight-flooded atriums, and natural ventilation corridors are no longer seen as aesthetic luxuries; empirical studies demonstrate that they significantly reduce urban heat-island effects, lower energy consumption, and measurably improve the cognitive function and emotional well-being of occupants. Yet, despite these clear benefits, widespread adoption remains hindered by high upfront construction costs and the specialized maintenance required to keep elevated ecosystems thriving in harsh wind and temperature conditions.</p>`},
+  p2:{title:'Passage 2: Literary Fiction / Narrative', jp:'文学・小説「画家のクララ」', html:`<p>Clara stood before the tall studio window, watching the afternoon rain blur the brick facades of the city below. On her easel rested the canvas she had repainted four times that week. Her instructor, Monsieur Laurent, had praised the first version for its technical precision—every shadow measured, every perspective line obeying the strict geometry of the academy. Yet Clara had scraped the palette knife across it the moment she returned to her room. Accuracy, she realized, was not what she was chasing. What she wanted was the <i>hum</i> of the street at dusk: the way wet cobblestones caught the amber glow of streetlamps, not as sharp reflections, but as restless ribbons of warmth. Picking up a wide, coarse brush, she dipped it into cadmium yellow and struck the canvas with a bold, uncalculated sweep. For the first time all week, her shoulders dropped, and she began to breathe.</p>`},
+  p3:{title:'Passage 3: History / Social Studies', jp:'歴史・社会「グーテンベルクの活版印刷」', html:`<p>Before the mid-fifteenth century, the production of books in Europe was an arduous craft confined largely to monastic scriptoriums, where scribes copied texts by hand onto parchment. A single volume could take months to complete, rendering books rare symbols of elite wealth. When Johannes Gutenberg introduced his movable-type printing press in Mainz, Germany, around 1440, he did not merely accelerate a manufacturing process; he catalyzed an information revolution. By combining durable metal alloy type, oil-based inks, and a wooden screw press adapted from agricultural wine-making, Gutenberg made the mass reproduction of texts economically viable. Within five decades, millions of books were circulating across Europe. This sudden democratization of knowledge weakened traditional monopolies on learning, fueled the scientific inquiry of the Renaissance, and laid the groundwork for widespread vernacular literacy.</p>`},
+  p4:{title:'Passage 4: Natural Science', jp:'自然科学「深海生物の生物発光」', html:`<p>In the sunless depths of the ocean's <i>bathypelagic zone</i>—stretching from 1,000 to 4,000 meters below the surface—sunlight is entirely absent, yet the darkness is frequently pierced by flashes of living light. This phenomenon, known as <i>bioluminescence</i>, is produced through a chemical reaction within an organism's cells, wherein a light-emitting compound called luciferin is oxidized by the enzyme luciferase. Remarkably, evolutionary biologists estimate that bioluminescence has evolved independently at least forty times across diverse marine lineages, from bacteria and jellyfish to deep-sea anglerfish. Such striking <i>convergent evolution</i> underscores the immense survival value of light in the abyss: species wield it to lure unsuspecting prey, startle predators with blinding decoys, or signal potential mates through species-specific blinking patterns.</p>`}
+};
+
+const Q = [];
+const add = o => Q.push(o);
+
+/* ---- Verbal: Synonyms (Q1–10) ---- */
+[
+ ['CANDID',['sweet','frank','secretive','anxious','careful'],'B','<b>candid</b> は「率直な、包み隠さない」。類義語は (B) frank（率直な）。(A) sweet は <i>candy</i> と見た目が似た引っ掛け選択肢です。'],
+ ['EPHEMERAL',['eternal','fragile','short-lived','dramatic','mysterious'],'C','<b>ephemeral</b> は「つかの間の、短命な（short-lived）」。SSAT最頻出単語の一つ。(A) eternal（永遠の）は対義語。'],
+ ['MITIGATE',['aggravate','alleviate','investigate','imitate','congregate'],'B','<b>mitigate</b> は「（痛みや被害を）和らげる、軽減する（alleviate）」。(A) aggravate（悪化させる）は対義語。'],
+ ['PRAGMATIC',['idealistic','practical','stubborn','ancient','dramatic'],'B','<b>pragmatic</b> は「実用的な、現実的な（practical）」。(A) idealistic（理想主義的な）は対義語。'],
+ ['NOVICE',['expert','novel','beginner','judge','messenger'],'C','語根 <i>nov-</i> は「新しい（new）」。<b>novice</b> は「初心者、新米（beginner）」。(B) novel は同じ語源を使った見た目引っ掛けです。'],
+ ['OBSCURE',['unclear','obvious','stubborn','tidy','cheerful'],'A','<b>obscure</b> は「曖昧な、分かりにくい（unclear）、無名の」。(B) obvious（明白な）は対義語。'],
+ ['BENEVOLENT',['violent','charitable','wealthy','reluctant','solitary'],'B','接頭辞 <i>bene-</i> は「良い（good）」。<b>benevolent</b> は「慈悲深い、慈善的な（charitable）」。'],
+ ['ZEALOUS',['jealous','lazy','enthusiastic','cautious','comical'],'C','<b>zealous</b> は「熱狂的な、極めて熱心な（enthusiastic）」。発音が似た (A) jealous（嫉妬深い）は定番の引っ掛けです。'],
+ ['SUPERFLUOUS',['superior','flowing','unnecessary','essential','rapid'],'C','語源は <i>super-</i>（超えて）＋ <i>flu-</i>（流れる＝溢れ出る）。「余分な、不必要な（unnecessary）」。'],
+ ['VINDICATE',['accuse','justify','indicate','destroy','surrender'],'B','<b>vindicate</b> は「無実を証明する、正当性を立証する（justify）」。(A) accuse（非難する）は対義語。']
+].forEach((r,i)=>add({n:i+1, sec:'verbal', part:'Synonyms', topic:'Synonyms', prompt:`<span class="word">${r[0]}</span>`, short:r[0], choices:r[1], ans:r[2], expl:r[3]}));
+
+/* ---- Verbal: Analogies (Q11–20) ---- */
+[
+ ['Sketch is to painting as',['frame is to museum','chisel is to sculpture','outline is to essay','melody is to instrument','actor is to script'],'C','「Sketch（下描き）は Painting（絵画）の事前の構成案である」→「Outline（アウトライン）は Essay（エッセイ）の事前の構成案である」。'],
+ ['Frugal is to miser as',['generous is to philanthropist','timid is to leader','wealthy is to banker','strict is to student','clumsy is to athlete'],'A','「Frugal（倹約・ケチ）は Miser（守銭奴）の特徴である」→「Generous（寛大）は Philanthropist（慈善家）の特徴である」。'],
+ ['Drought is to rain as',['hurricane is to wind','famine is to food','flood is to river','harvest is to crop','winter is to snow'],'B','「Drought（干ばつ）は Rain（雨）が極端に不足した状態である」→「Famine（飢饉）は Food（食料）が極端に不足した状態である」。'],
+ ['Whisper is to shout as',['walk is to run','smile is to cry','listen is to hear','sleep is to dream','read is to write'],'A','「Whisper（ささやく）より強度が大きいのが Shout（叫ぶ）である」→「Walk（歩く）より速度・強度が大きいのが Run（走る）である」。'],
+ ['Stanza is to poem as',['page is to paper','verse is to rhyme','act is to play','author is to novel','brush is to canvas'],'C','「Stanza（詩の連）は Poem（詩）を構成する単位である」→「Act（幕）は Play（演劇）を構成する単位である」。'],
+ ['Scalpel is to surgeon as',['stethoscope is to patient','symptom is to doctor','gavel is to judge','telescope is to star','tractor is to harvest'],'C','「Scalpel（メス）は Surgeon（外科医）が使う専門道具である」→「Gavel（木槌）は Judge（裁判官）が使う専門道具である」。'],
+ ['Hermit is to solitary as',['nomad is to wandering','athlete is to polite','scholar is to wealthy','coward is to brave','guest is to permanent'],'A','「Hermit（隠者）は定義上 Solitary（孤独な）人である」→「Nomad（遊牧民）は定義上 Wandering（放浪する）人である」。'],
+ ['Transparent is to opaque as',['fragile is to delicate','hollow is to empty','turbulent is to calm','ancient is to historical','damp is to wet'],'C','「Transparent（透明）と Opaque（不透明）は対義語である」→「Turbulent（荒れ狂う）と Calm（穏やかな）は対義語である」。'],
+ ['Catalyst is to reaction as',['brake is to vehicle','spark is to fire','umbrella is to rain','anchor is to ship','shadow is to light'],'B','「Catalyst（触媒）は Reaction（反応）を引き起こすきっかけである」→「Spark（火花）は Fire（火事・炎）を引き起こすきっかけである」。'],
+ ['Sonnet is to poetry as',['biography is to nonfiction','dictionary is to alphabet','symphony is to conductor','portrait is to frame','newspaper is to journalist'],'A','「Sonnet（14行詩）は Poetry（詩）という大分類の1ジャンルである」→「Biography（伝記）は Nonfiction（ノンフィクション）という大分類の1ジャンルである」。']
+].forEach((r,i)=>add({n:i+11, sec:'verbal', part:'Analogies', topic:'Analogies', prompt:r[0], short:r[0], choices:r[1], ans:r[2], expl:'<b>ブリッジ文：</b>'+r[3]}));
+
+/* ---- Quantitative (Q21–36) ---- */
+[
+ ['連続割引','A jacket originally priced at $120 is placed on sale at a 20% discount. Later, the discounted price is reduced by an additional 10% for a weekend promotion. What is the final price of the jacket?',['$84.00','$86.40','$88.00','$90.00','$96.00'],'B','最初の20%オフで $120×0.8=$96.00。そこからさらに10%オフなので $96.00×0.9=$86.40。（※30%オフにして $84 を選ばないよう注意）'],
+ ['一次方程式',`If ${F('3<i>x</i> − 5','4')} = ${F('<i>x</i> + 3','2')}, what is the value of <i>x</i>?`,['2','4','8','11','13'],'D','両辺を4倍して分母を払うと 3<i>x</i>−5=2(<i>x</i>+3) → 3<i>x</i>−5=2<i>x</i>+6 → <i>x</i>=11。'],
+ ['平均と合計','The average (arithmetic mean) of five numbers is 18. When a sixth number is added to the group, the new average of the six numbers becomes 21. What is the sixth number?',['24','30','33','36','39'],'D','5つの数の合計は 18×5=90。6つの数の合計は 21×6=126。差は 126−90=36。'],
+ ['長方形の周囲と面積','The length of a rectangle is 3 times its width. If the perimeter of the rectangle is 48 cm, what is the area of the rectangle in cm²?',['36','72','108','144','192'],'C','幅を <i>w</i>、長さを 3<i>w</i> とすると、周囲は 2(<i>w</i>+3<i>w</i>)=48 → 8<i>w</i>=48 → <i>w</i>=6, 長さ=18。面積は 6×18=108。'],
+ ['新定義演算','For all real numbers <i>a</i> and <i>b</i>, let the symbol ⋆ be defined by the equation <i>a</i> ⋆ <i>b</i> = <i>a</i>² − 2<i>ab</i>. What is the value of 5 ⋆ 3?',['−5','1','7','10','19'],'A','<i>a</i>=5, <i>b</i>=3 を代入すると 5²−2(5)(3)=25−30=−5。'],
+ ['指数法則',`What is the value of ${F('2<sup>5</sup> × 2<sup>3</sup>','2<sup>4</sup>')}?`,['4','8','16','32','64'],'C',`${F('2<sup>5</sup> × 2<sup>3</sup>','2<sup>4</sup>')} = 2<sup>5+3−4</sup> = 2<sup>4</sup> = 16。（掛け算は指数を足し、割り算は指数を引く）`],
+ ['比と割合','In an art class, the ratio of students using watercolors to students using oil paints is 3:5. If there are 40 students in the class in total (and each student uses only one type of paint), how many more students use oil paints than watercolors?',['5','8','10','15','25'],'C','比の合計 3+5=8。生徒40人なので比の「1」は 40÷8=5人。差は (5−3)×5=10人。'],
+ ['速さ・時間・距離','A train travels 180 kilometers in 3 hours. At this same constant rate, how many kilometers will the train travel in 4 hours and 30 minutes?',['240','255','270','285','300'],'C','時速は 180÷3=60 km/h。4.5時間では 60×4.5=270 km。'],
+ ['三平方の定理','In a right triangle, the lengths of the two shorter sides (legs) are 6 cm and 8 cm. What is the length of the longest side (hypotenuse)?',['9 cm','10 cm','12 cm','14 cm','28 cm'],'B','6² + 8² = 36 + 64 = 100 → √100 = 10 cm（3:4:5 の直角三角形の2倍）。'],
+ ['確率','A bag contains 4 red marbles, 5 blue marbles, and 3 green marbles. If one marble is drawn at random from the bag, what is the probability that the marble is NOT blue?',[F(1,4),F(1,3),F(5,12),F(7,12),F(3,4)],'D',`全12個のうち青以外（赤4＋緑3＝7個）を引く確率は ${F(7,12)}。`],
+ ['直線の傾き','What is the slope of the line passing through the points (2, 3) and (6, 11) in the <i>xy</i>-plane?',[F(1,2),'1','2','4','8'],'C',`Slope = ${F('11 − 3','6 − 2')} = ${F(8,4)} = 2。`],
+ ['一次不等式と整数','If <i>x</i> is an integer and 2<i>x</i> + 7 &lt; 19, what is the greatest possible value of <i>x</i>?',['4','5','6','12','13'],'B','2<i>x</i>&lt;12 → <i>x</i>&lt;6。6 未満で最大の整数（greatest integer）は 5。'],
+ ['正方形と内接円','A circle is inscribed inside a square with a side length of 10 cm (meaning the circle touches all four sides of the square). What is the area of the region inside the square but OUTSIDE the circle?',['100 − 10<i>π</i>','100 − 20<i>π</i>','100 − 25<i>π</i>','40 − 10<i>π</i>','100 − 100<i>π</i>'],'C','正方形の面積（10² = 100）から、半径 5 の円の面積（<i>π</i>×5² = 25<i>π</i>）を引くので 100−25<i>π</i>。'],
+ ['割合の増減','The price of a stock increased by 25% in January, and then decreased by 20% in February. How does the final price at the end of February compare to the original price at the beginning of January?',['It is 5% higher.','It is 5% lower.','It is 2% higher.','It is exactly the same.','It cannot be determined without the original price.'],'D','元の価格を 100 とおくと、25%増で 125、そこから20%減で 125×0.8=100。元の価格と全く同じに戻ります。'],
+ ['因数分解の応用','If <i>x</i> + <i>y</i> = 9 and <i>x</i> − <i>y</i> = 3, what is the value of <i>x</i>² − <i>y</i>²?',['6','12','27','36','72'],'C','<i>x</i>²−<i>y</i>² = (<i>x</i>+<i>y</i>)(<i>x</i>−<i>y</i>) = 9×3 = 27。'],
+ ['数列の規則性','A sequence of numbers is formed by multiplying the previous term by 2 and then subtracting 1. If the first term is 3, what is the fourth term in the sequence?',['9','15','17','31','33'],'C','第1項＝3、第2項＝3×2−1=5、第3項＝5×2−1=9、第4項＝9×2−1=17。']
+].forEach((r,i)=>add({n:i+21, sec:'quant', part:'Math', topic:r[0], prompt:r[1], short:r[0], choices:r[2], ans:r[3], expl:r[4]}));
+
+/* ---- Reading (Q37–50) ---- */
+[
+ ['p1','What is the primary purpose of the passage?',['To criticize modern architects for ignoring historical building styles','To explain the transition toward biophilic design, along with its advantages and challenges','To argue that city governments should ban traditional steel-and-glass skyscrapers','To provide a step-by-step manual on how to maintain vertical forests','To prove that indoor plants are more cost-effective than air-conditioning systems'],'B','従来の建築からバイオフィリック・デザインへの転換、その実証的メリット、そして普及を阻む課題（初期コストと維持管理）をバランスよく説明しているため。'],
+ ['p1','In the first sentence, the author refers to "an ornamental afterthought" primarily to',['praise the minimalist beauty of traditional city lobbies','emphasize how superficially nature was previously integrated into urban buildings','suggest that shrubs and sidewalk trees are harmful to concrete foundations','show that older buildings were more expensive to decorate than modern ones','argue that plants should only be grown in public parks rather than near buildings'],'B','自然を「装飾的な後付け（ornamental afterthought）」と呼ぶことで、以前は自然がいかに表面的（superficially）にしか扱われていなかったかを強調しています。'],
+ ['p1','According to the passage, all of the following are benefits of biophilic design EXCEPT:',['decreased energy usage in buildings','reduction of extreme urban temperatures','lower initial construction expenses','enhanced mental performance of people inside the buildings','improved emotional health for building occupants'],'C','本文末尾に「高い初期建設コスト（high upfront construction costs）が妨げ」とあるため、「初期建設費が下がること（C）」は誤りです。'],
+ ['p1',"Which of the following best describes the author's tone in the passage?",['Dismissive and sarcastic','Nostalgic and emotional','Informative and balanced','Urgent and alarmist','Uncertain and skeptical'],'C','メリット（実証研究）とデメリット（コスト・維持）の両面を客観的に述べているため、Informative and balanced（情報提供的でバランスが取れている）が正解です。'],
+ ['p2','Why did Clara destroy the first version of her painting?',['Monsieur Laurent had harshly criticized her use of perspective.','She accidentally ruined the canvas while carrying it in the rain.','She felt that technical perfection alone failed to capture the living atmosphere she wanted to express.','She ran out of oil paint and needed to reuse the canvas for a different assignment.','She wanted to copy the exact style of the traditional academy painters.'],'C','師匠に褒められた「技術的な正確さ（Accuracy）」だけでは、自分が描きたい夕暮れの街の生きた空気感を表現できないと感じたためです。'],
+ ['p2','In the context of the passage, the word "hum" (line 6) most nearly means',['a loud, annoying mechanical noise','a quiet song sung with closed lips','the vibrant, living energy and mood of a place','the strict geometric structure of city buildings','the sound of rain hitting a glass window'],'C','ここでの <i>hum</i> は、濡れた石畳が街灯の光を温かく反射するような「街が放つ生きたエネルギーや情緒（vibrant, living energy and mood）」の比喩です。'],
+ ['p2',`At the end of the passage, Clara's physical reaction ("her shoulders dropped, and she began to breathe") suggests that she feels`,['exhausted and ready to give up on painting altogether','relieved and liberated after breaking free from rigid rules','nervous about what Monsieur Laurent will say the next day','cold because the studio window was left open in the rain','disappointed by the messy appearance of the cadmium yellow paint'],'B','アカデミーの厳格なルールから離れて大胆な一筆を入れたことで、肩の力が抜けて深い呼吸ができた＝「安堵と解放感（relieved and liberated）」を表しています。'],
+ ['p3',"The main idea of the passage is that Gutenberg's printing press",['was originally designed to press grapes for German wine production','transformed European society by making books and knowledge widely accessible','caused monastic scribes to lose their interest in religious texts','was immediately banned by wealthy elites who wanted to keep books rare','proved that wooden machines were more durable than metal ones'],'B','活版印刷の発明が本の大量生産を可能にし、知識を広く普及させてヨーロッパ社会を変革した（information revolution）という主旨の(B)が正解です。'],
+ ['p3','As used in the passage, the word "arduous" (line 1) most nearly means',['rapid and automated','careless and inaccurate','difficult and labor-intensive','secret and illegal','joyful and entertaining'],'C','手書きで1冊に何ヶ月もかかる作業を指しているため、<i>arduous</i> は「困難で多大な労力を要する（difficult and labor-intensive）」という意味になります。'],
+ ['p3',"According to the passage, which of the following was an innovation or adaptation used in Gutenberg's printing system?",['Steam-powered engines imported from Asia','Water-based paints used by medieval portrait artists','Handmade animal-skin parchment for every page','A screw press mechanism borrowed from agricultural practices','Digital cataloging systems for European libraries'],'D','本文中盤の「農業のワイン作りから応用された木製のねじ式プレス機（wooden screw press adapted from agricultural wine-making）」と一致します。'],
+ ['p3','What does the author mean by the phrase "democratization of knowledge" in the final sentence?',['Only elected politicians were allowed to write and publish books.','Books were used exclusively to teach citizens how to vote in elections.','Information and learning became available to a much broader public rather than just a privileged few.','All European countries agreed to speak the exact same language.','Libraries began charging high taxes to anyone who borrowed a book.'],'C','「知識の民主化（democratization of knowledge）」とは、一部の特権階級に独占されていた学問や情報が、一般の幅広い人々に開かれたことを意味します。'],
+ ['p4','According to the passage, how is bioluminescence produced?',['By absorbing and reflecting faint sunlight from the ocean surface','Through an internal chemical reaction between luciferin and luciferase','By generating high-voltage electrical currents in the water','Through friction caused by swimming rapidly in cold water','By eating glowing minerals found on the ocean floor'],'B','細胞内で発光物質「ルシフェリン」が酵素「ルシフェラーゼ」によって酸化される化学反応（chemical reaction）によって光が作られます。'],
+ ['p4','Why does the author mention that bioluminescence evolved independently "at least forty times"?',['To suggest that scientists are confused and cannot agree on how evolution works','To emphasize how crucial and advantageous the ability to produce light is for survival in the deep sea','To prove that all deep-sea creatures share the exact same immediate ancestor','To argue that shallow-water fish are less intelligent than deep-sea fish','To show that chemical reactions happen faster in cold water than on land'],'B','異なる生物系統で40回以上も独立して進化した（収斂進化）という事実を挙げることで、深海において「光ること」がいかに生存に有利で重要かを強調しています。'],
+ ['p4','Based on the passage, which of the following is NOT mentioned as a function of bioluminescence for deep-sea organisms?',['Attracting prey closer to the organism','Confusing or frightening away predators','Communicating with potential mates','Warming the surrounding water to survive freezing temperatures','Creating visual decoys in the dark'],'D','獲物をおびき寄せる（A）、捕食者を驚かすおとり（B/E）、仲間への合図（C）は書かれていますが、「周囲の水を温める（D）」という記述はありません。']
+].forEach((r,i)=>add({n:i+37, sec:'reading', part:PASSAGES[r[0]].title.split(':')[0], topic:PASSAGES[r[0]].title, passage:r[0], prompt:r[1], short:r[1], choices:r[2], ans:r[3], expl:r[4]}));
+
+const WRITING_PROMPTS = {
+  A:{label:'Option A (Personal / Argumentative Prompt)', text:'<i>“Creativity is just as important as literacy in modern education.”</i> Do you agree or disagree with this statement? Support your position with specific examples from your own experience, current events, or your studies.'},
+  B:{label:'Option B (Creative / Narrative Prompt)', text:'<i>“She opened the old sketchbook and realized the drawing on the first page had changed.”</i> Use this sentence as the beginning of a story.'}
+};
+const WRITING_RUBRIC = [
+  ['0. 構想（アウトライン）','メモ書き','—','最初の3〜4分','A/Bの選択、主張（Thesis）、具体例2つを箇条書きにする'],
+  ['1. Introduction','序論','約 50〜60 words','4分','トピックの導入（Hook）＋ 自分の明確な立場（Thesis Statement）'],
+  ['2. Body Paragraph 1','本論①','約 90〜110 words','7分','1つ目の理由＋具体例（自分自身のデザインや学校での経験など）'],
+  ['3. Body Paragraph 2','本論②','約 90〜110 words','7分','2つ目の理由＋具体例（社会問題、歴史、読書や授業で学んだこと）'],
+  ['4. Conclusion','結論','約 40〜60 words','3分','主張の再確認（別の表現で）＋ 全体を締めくくる一文'],
+  ['5. 見直し（Proofreading）','推敲','—','最後の2〜3分','スペルミス、時制のズレ、主語と動詞の一致をチェック']
+];
+const WRITING_CHECKS = ['250〜350語程度で最後まで完結している','Introduction に明確な主張（Thesis Statement）がある','Body が2段落あり、それぞれに具体例がある','Conclusion で主張を別の表現で再確認している','スペルミス・時制のズレ・主語と動詞の一致を見直した'];
+
+const QMAP = {}; Q.forEach(q => QMAP[q.n] = q);
+const range = (a,b) => Array.from({length:b-a+1}, (_,i)=>a+i);
+
+/* =====================================================================
+ *  PLANS
+ * ===================================================================== */
+const S = (key,label,qs,min) => ({type:'section', key, label, qs, time:min*60});
+const W = (label) => ({type:'writing', key:'writing', label, time:25*60});
+const B = (label,min) => ({type:'break', key:'break', label, time:min*60});
+const PLANS = {
+  standard:{name:'標準模試（問題集の順番）', desc:'Verbal 12分 → Quantitative 20分 → Reading 20分 → Writing 25分（計 約77分）',
+    steps:()=>[S('verbal','Section 1: Verbal',range(1,20),12), S('quant','Section 2: Quantitative',range(21,36),20), S('reading','Section 3: Reading',range(37,50),20), W('Section 4: Writing Sample')]},
+  real:{name:'本番順シミュレーション', desc:'Writing 25分 → 休憩 → 数学① 10分 → Reading 20分 → 休憩 → Verbal 12分 → 数学② 10分（本番 Upper Level と同じ順番）',
+    steps:()=>[W('Part 1: Writing Sample'), B('Break 1',10), S('quant','Part 2: Quantitative 1（数学①）',range(21,28),10), S('reading','Part 3: Reading',range(37,50),20), B('Break 2',10), S('verbal','Part 4: Verbal',range(1,20),12), S('quant','Part 5: Quantitative 2（数学②）',range(29,36),10)]},
+  verbal:{name:'Verbal のみ', desc:'20問 / 12分', steps:()=>[S('verbal','Verbal Section',range(1,20),12)]},
+  quant:{name:'Quantitative のみ', desc:'16問 / 20分', steps:()=>[S('quant','Quantitative Section',range(21,36),20)]},
+  reading:{name:'Reading のみ', desc:'14問 / 20分', steps:()=>[S('reading','Reading Section',range(37,50),20)]},
+  writing:{name:'Writing のみ', desc:'1題 / 25分', steps:()=>[W('Writing Sample')]}
+};
+
+/* =====================================================================
+ *  STORAGE
+ * ===================================================================== */
+const LS_ATT='ssatMock.attempts.v1', LS_CUR='ssatMock.current.v1', LS_NAME='ssatMock.name.v1';
+const load = (k,d) => { try { const v = JSON.parse(localStorage.getItem(k)); return v ?? d; } catch(e) { return d; } };
+const store = (k,v) => localStorage.setItem(k, JSON.stringify(v));
+let cur = load(LS_CUR, null);
+const saveCur = () => cur ? store(LS_CUR, cur) : localStorage.removeItem(LS_CUR);
+const attempts = () => load(LS_ATT, []);
+
+/* =====================================================================
+ *  HELPERS
+ * ===================================================================== */
+const $ = s => document.querySelector(s);
+const app = $('#app');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt = sec => { sec = Math.max(0, Math.round(sec)); return `${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}`; };
+const fmtDate = t => new Date(t).toLocaleString('ja-JP', {year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+const words = t => (t||'').trim().split(/\s+/).filter(Boolean).length;
+const plain = h => h.replace(/<span class="frac"><span>(.*?)<\/span><span>(.*?)<\/span><\/span>/g, '($1)/($2)')
+                    .replace(/<sup>(.*?)<\/sup>/g, '^$1').replace(/<[^>]+>/g, '').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
+function modal(html){ $('#modal').innerHTML = `<div class="back"><div class="box">${html}</div></div>`; }
+function closeModal(){ $('#modal').innerHTML=''; }
+
+/* =====================================================================
+ *  ROUTER
+ * ===================================================================== */
+function route(){
+  const h = location.hash.replace(/^#\/?/, '') || 'home';
+  const [r, arg] = h.split('/');
+  document.body.classList.toggle('in-exam', r === 'exam');
+  document.querySelectorAll('#topbar nav a').forEach(a => a.classList.toggle('active', a.dataset.r === r || (r==='result' && a.dataset.r==='history')));
+  closeModal(); hideHlPop();
+  window.scrollTo(0,0);
+  if (r === 'exam') { if (!cur) { location.hash = '#/home'; return; } return renderExam(); }
+  if (r === 'history') return renderHistory();
+  if (r === 'result') return renderResult(arg);
+  if (r === 'review') return renderReview();
+  if (r === 'guide') return renderGuide();
+  return renderHome();
+}
+window.addEventListener('hashchange', route);
+
+/* =====================================================================
+ *  HOME
+ * ===================================================================== */
+function renderHome(){
+  const name = load(LS_NAME, '');
+  const planCard = (k, primary) => `
+    <div class="card">
+      <h3 style="margin-top:0">${PLANS[k].name}</h3>
+      <p class="muted small">${PLANS[k].desc}</p>
+      <button class="btn ${primary?'':'sec'}" onclick="startExam('${k}')">開始する</button>
+    </div>`;
+  app.innerHTML = `
+    <h1>SSAT 模擬試験（Upper Level 対策）</h1>
+    <p class="muted">「SSAT問題集 ver. 1」全50問＋Writing を、本番の PC 受験（CBT）に近い形式で解く模試です。
+      制限時間はセクションごとに自動で計測され、時間切れになると自動で次のセクションに進みます。</p>
+    ${cur ? `<div class="card" style="border-color:var(--warn);background:#fffaf0">
+        <b>受験途中の模試があります</b>：${esc(cur.planName)}（${esc(cur.steps[cur.stepIdx]?.label||'')}）
+        <div class="small muted">※ 制限時間は中断中もカウントされています（本番同様）。</div>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" onclick="location.hash='#/exam'">続きから再開</button>
+          <button class="btn danger" onclick="abandon()">この模試を破棄</button>
+        </div></div>` : ''}
+    <div class="card">
+      <label>受験者名（任意）：<input type="text" id="nm" value="${esc(name)}" placeholder="例：Hanako" onchange="store('${LS_NAME}', this.value)"></label>
+    </div>
+    <h2>フル模試</h2>
+    <div class="grid2">${planCard('real', true)}${planCard('standard', true)}</div>
+    <h2>セクション別練習</h2>
+    <div class="grid2">${['verbal','quant','reading','writing'].map(k=>planCard(k,false)).join('')}</div>
+    <h2>受験のルール（本番形式）</h2>
+    <div class="card small">
+      <ul style="margin:0;padding-left:20px">
+        <li>セクション内では自由に前後の問題へ移動できますが、<b>終了したセクションには戻れません</b>。</li>
+        <li>電卓は使用不可。計算用に紙とペン（本番 PC 受験ではホワイトボードシート）を用意してください。</li>
+        <li>採点：正解 <b>+1</b>、不正解 <b>−¼</b>、無回答 <b>0</b>（Upper Level の素点ルール）。選択肢を1つでも消去できれば推測して答える価値があります。</li>
+        <li>便利機能：選択肢右の <b>✕</b> で消去（取り消し線）、<b>🚩 見直し</b> マーク、<b>自信度（○・△・Skip）</b>の記録、長文はドラッグで<b>ハイライト</b>。</li>
+        <li>キーボード操作：<b>A〜E</b> で解答、<b>← →</b> で前後の問題へ移動。</li>
+        <li>結果はこのブラウザ内に保存されます（同じ端末・同じブラウザで「テスト結果・解説」から確認できます）。</li>
+      </ul>
+    </div>`;
+}
+
+function startExam(planKey, custom){
+  if (cur && !confirm('受験途中の模試があります。破棄して新しく開始しますか？')) return;
+  const p = custom || PLANS[planKey];
+  cur = {id: Date.now().toString(36), planKey, planName: p.name, name: load(LS_NAME,''),
+         steps: custom ? custom.steps : p.steps(), stepIdx:0, phase:'intro', qIdx:0,
+         answers:{}, conf:{}, flags:{}, elim:{}, hl:{}, essay:{prompt:'', text:''},
+         used:{}, startedAt: Date.now(), endAt:null, pausedLeft:null};
+  enterStep();
+  saveCur();
+  location.hash = '#/exam';
+}
+function abandon(){
+  if (!confirm('受験途中の模試を破棄します。よろしいですか？')) return;
+  cur = null; saveCur(); renderHome();
+}
+
+/* =====================================================================
+ *  EXAM ENGINE
+ * ===================================================================== */
+const step = () => cur.steps[cur.stepIdx];
+function enterStep(){
+  cur.qIdx = 0; cur.pausedLeft = null;
+  if (step().type === 'break') { cur.phase = 'run'; cur.endAt = Date.now() + step().time*1000; }
+  else { cur.phase = 'intro'; cur.endAt = null; }
+}
+function beginStep(){
+  cur.phase = 'run'; cur.endAt = Date.now() + step().time*1000; saveCur(); renderExam();
+}
+function timeLeft(){
+  if (cur.pausedLeft != null) return cur.pausedLeft/1000;
+  return cur.endAt ? (cur.endAt - Date.now())/1000 : step().time;
+}
+function finishStep(){
+  const s = step();
+  if (s.type !== 'break') cur.used[cur.stepIdx] = Math.min(s.time, Math.round(s.time - Math.max(0, timeLeft())));
+  closeModal(); hideHlPop();
+  cur.stepIdx++;
+  if (cur.stepIdx >= cur.steps.length) return finalize();
+  enterStep(); saveCur(); renderExam();
+}
+function finalize(){
+  const a = {id: cur.id, date: Date.now(), startedAt: cur.startedAt, planKey: cur.planKey, planName: cur.planName, name: cur.name,
+             steps: cur.steps.map((s,i)=>({type:s.type, key:s.key, label:s.label, qs:s.qs||[], time:s.time, used:cur.used[i]??null})),
+             answers: cur.answers, conf: cur.conf, flags: cur.flags, essay: cur.essay, checks:{}};
+  const list = attempts(); list.unshift(a); store(LS_ATT, list);
+  cur = null; saveCur();
+  location.hash = '#/result/' + a.id;
+}
+
+let timerHandle = null;
+function tick(){
+  if (!cur || !location.hash.startsWith('#/exam') || cur.phase !== 'run' || cur.pausedLeft != null) return;
+  const left = timeLeft();
+  const el = $('#timer');
+  if (el) {
+    el.textContent = fmt(left);
+    el.classList.toggle('warn', left <= 300 && left > 60);
+    el.classList.toggle('crit', left <= 60);
+  }
+  if (left <= 0) {
+    if (step().type === 'break') return finishStep();
+    finishStep();
+    modal(`<h3 style="margin-top:0">⏰ 時間切れ</h3><p>前のセクションの制限時間が終了したため、自動的に次へ進みました。</p><button class="btn" onclick="closeModal()">OK</button>`);
+  }
+}
+timerHandle = setInterval(tick, 500);
+
+function headHTML(extra){
+  const s = step(); const left = timeLeft();
+  return `<div class="examhead">
+    <span class="sec">${esc(s.label)}</span>${extra||''}
+    <span class="sp"></span>
+    <span class="small" style="opacity:.8">残り時間</span>
+    <span id="timer" class="timer ${left<=60?'crit':left<=300?'warn':''}" style="${cur.hideTimer?'visibility:hidden':''}">${fmt(left)}</span>
+    <button class="hbtn" onclick="cur.hideTimer=!cur.hideTimer;saveCur();renderExam()">${cur.hideTimer?'時計を表示':'時計を隠す'}</button>
+    <button class="hbtn" onclick="pause()">一時停止</button>
+    <button class="hbtn" onclick="location.hash='#/home'">中断</button>
+  </div>`;
+}
+
+function renderExam(){
+  if (!cur) return;
+  const s = step();
+  if (cur.pausedLeft != null) { app.innerHTML = `<div class="pausecover"><h2>一時停止中</h2><p>残り時間 ${fmt(cur.pausedLeft/1000)}（問題は非表示になっています）</p><button class="btn big" onclick="resume()">再開する</button></div>`; return; }
+
+  // auto-advance if time expired while away
+  if (cur.phase === 'run' && timeLeft() <= 0) { tick(); return; }
+
+  if (s.type === 'break') {
+    app.innerHTML = `<div class="exam">${headHTML()}<div class="exambody"><div class="center-card">
+      <div class="card" style="text-align:center">
+        <h2 style="margin-top:0">☕ ${esc(s.label)}（${s.time/60}分）</h2>
+        <p>トイレ休憩・水分補給の時間です。本番では休憩も時間通りに進みます。</p>
+        <p class="muted small">次：${esc(cur.steps[cur.stepIdx+1]?.label || '')}</p>
+        <button class="btn big" onclick="finishStep()">休憩を終了して次へ進む</button>
+      </div></div></div></div>`;
+    return;
+  }
+
+  if (cur.phase === 'intro') {
+    const info = SECTION_INFO[s.key];
+    const n = s.type === 'writing' ? '1題（2題から選択）' : `${s.qs.length}問`;
+    app.innerHTML = `<div class="exam"><div class="examhead"><span class="sec">${esc(cur.planName)}</span><span class="sp"></span>
+        <span class="small">${cur.stepIdx+1} / ${cur.steps.length}</span>
+        <button class="hbtn" onclick="location.hash='#/home'">ホームへ</button></div>
+      <div class="exambody" style="overflow:auto"><div class="center-card">
+      <div class="card">
+        <div class="partlabel">${info.name}（${info.jp}）</div>
+        <h1>${esc(s.label)}</h1>
+        <p><b>問題数：</b>${n}　<b>制限時間：</b>${s.time/60}分</p>
+        <div class="directions" style="font-size:15px">${info.directions}</div>
+        ${s.type==='section' && s.key==='quant' ? '<p class="small">✏️ 計算用紙（またはホワイトボード）を用意してください。電卓は使えません。</p>' : ''}
+        ${s.type==='writing' ? '<p class="small">⌨️ 本番 PC 受験ではキーボードで入力します。この画面ではスペルチェック（自動補正）はオフになっています。</p>' : ''}
+        <p class="small muted">「開始」を押すとタイマーがスタートします。</p>
+        <button class="btn big" onclick="beginStep()">開始</button>
+      </div></div></div></div>`;
+    return;
+  }
+
+  if (s.type === 'writing') return renderWriting();
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const s = step();
+  const n = s.qs[cur.qIdx]; const q = QMAP[n];
+  const sel = cur.answers[n]; const el = cur.elim[n] || [];
+  const pas = q.passage ? PASSAGES[q.passage] : null;
+  const prevPart = cur.qIdx > 0 ? QMAP[s.qs[cur.qIdx-1]].part : null;
+  const showDir = q.sec === 'verbal' && (cur.qIdx === 0 || prevPart !== q.part);
+  app.innerHTML = `<div class="exam">
+    ${headHTML(`<span class="qpos">Question ${cur.qIdx+1} of ${s.qs.length}</span>`)}
+    <div class="exambody ${pas?'split':''}">
+      ${pas ? `<div class="pane passage" id="passage">
+          <div class="partlabel">${esc(pas.title)}</div>
+          <div class="small muted" style="margin:4px 0 8px">ドラッグして選択するとハイライトできます
+            <button class="btn sec" style="padding:2px 10px;font-size:12px;margin-left:8px" onclick="clearHl('${q.passage}')">ハイライト消去</button></div>
+          <div id="ptext">${cur.hl[q.passage] || pas.html}</div></div>` : ''}
+      <div class="pane qpane">
+        <div class="partlabel">${q.sec==='verbal' ? (q.part==='Synonyms'?'Part A: Synonyms':'Part B: Analogies') : SECTION_INFO[q.sec].name}</div>
+        ${showDir ? `<div class="directions">${PART_DIR[q.part]}</div>` : ''}
+        <div class="qnum">Q${n}${cur.flags[n] ? ' 🚩' : ''}</div>
+        <div class="prompt">${q.prompt}</div>
+        <div>${q.choices.map((c,i)=>`
+          <div class="choice ${sel===L[i]?'sel':''} ${el.includes(L[i])?'elim':''}" onclick="choose('${L[i]}')">
+            <span class="letter">${L[i]}</span><span class="ctext">${c}</span>
+            <button class="x" title="この選択肢を消去" onclick="event.stopPropagation();toggleElim('${L[i]}')">✕</button>
+          </div>`).join('')}</div>
+        <div class="confrow">自信度：
+          ${['○','△','Skip'].map(c=>`<button class="${cur.conf[n]===c?'on':''}" onclick="setConf('${c}')">${c}</button>`).join('')}
+          ${sel ? `<button style="margin-left:auto" onclick="choose(null)">解答を取り消す</button>` : ''}
+        </div>
+      </div>
+    </div>
+    <div class="examfoot">
+      <button class="btn sec" ${cur.qIdx===0?'disabled':''} onclick="go(-1)">◀ 前へ</button>
+      <button class="btn sec flagbtn ${cur.flags[n]?'on':''}" onclick="toggleFlag()">🚩 見直し</button>
+      <button class="btn sec" onclick="showNav()">問題一覧</button>
+      <span class="sp"></span>
+      ${cur.qIdx < s.qs.length-1 ? `<button class="btn" onclick="go(1)">次へ ▶</button>` : `<button class="btn" onclick="confirmEnd()">セクションを終了</button>`}
+    </div>
+  </div>`;
+}
+
+function choose(l){ const n = step().qs[cur.qIdx]; if (l) { cur.answers[n] = l; (cur.elim[n]||[]).includes(l) && toggleElim(l, true); } else delete cur.answers[n]; saveCur(); renderQuestion(); }
+function toggleElim(l, silent){ const n = step().qs[cur.qIdx]; const e = cur.elim[n] = cur.elim[n] || []; const i = e.indexOf(l); i>=0 ? e.splice(i,1) : e.push(l); if (i<0 && cur.answers[n]===l) delete cur.answers[n]; if (!silent) { saveCur(); renderQuestion(); } }
+function setConf(c){ const n = step().qs[cur.qIdx]; cur.conf[n] === c ? delete cur.conf[n] : cur.conf[n] = c; saveCur(); renderQuestion(); }
+function toggleFlag(){ const n = step().qs[cur.qIdx]; cur.flags[n] ? delete cur.flags[n] : cur.flags[n] = true; saveCur(); renderQuestion(); }
+function go(d){ const s = step(); cur.qIdx = Math.max(0, Math.min(s.qs.length-1, cur.qIdx + d)); hideHlPop(); saveCur(); renderQuestion(); const qp = document.querySelector('.qpane'); if (qp) qp.scrollTop = 0; }
+function jump(i){ cur.qIdx = i; closeModal(); saveCur(); renderQuestion(); }
+function showNav(){
+  const s = step();
+  const un = s.qs.filter(n=>!cur.answers[n]).length;
+  modal(`<h3 style="margin-top:0">問題一覧（${esc(s.label)}）</h3>
+    <div class="small muted">青＝解答済み / 白＝未解答 / 🚩＝見直しマーク　未解答：${un}問</div>
+    <div class="navgrid">${s.qs.map((n,i)=>`<button class="${cur.answers[n]?'ans':''} ${i===cur.qIdx?'cur':''}" onclick="jump(${i})">Q${n}${cur.answers[n]?`<div class="small">${cur.answers[n]}</div>`:'<div class="small">&nbsp;</div>'}${cur.flags[n]?'<span class="f">🚩</span>':''}</button>`).join('')}</div>
+    <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn sec" onclick="closeModal()">閉じる</button><button class="btn" onclick="confirmEnd()">セクションを終了</button></div>`);
+}
+function confirmEnd(){
+  const s = step();
+  let msg;
+  if (s.type === 'writing') msg = `現在 <b>${words(cur.essay.text)}</b> 語です。`;
+  else { const un = s.qs.filter(n=>!cur.answers[n]).length, fl = s.qs.filter(n=>cur.flags[n]).length;
+         msg = `未解答：<b>${un}</b>問　見直しマーク：<b>${fl}</b>問`; }
+  modal(`<h3 style="margin-top:0">${esc(s.label)} を終了しますか？</h3><p>${msg}</p>
+    <p class="small muted">終了すると、このセクションには戻れません。残り時間：${fmt(timeLeft())}</p>
+    <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn sec" onclick="closeModal()">戻る</button><button class="btn" onclick="finishStep()">終了して次へ</button></div>`);
+}
+function pause(){ cur.pausedLeft = Math.max(0, cur.endAt - Date.now()); saveCur(); renderExam(); }
+function resume(){ cur.endAt = Date.now() + cur.pausedLeft; cur.pausedLeft = null; saveCur(); renderExam(); }
+
+/* --- writing --- */
+function renderWriting(){
+  const e = cur.essay;
+  app.innerHTML = `<div class="exam">${headHTML()}
+    <div class="exambody" style="overflow:auto"><div class="pane qpane">
+      <div class="directions">${SECTION_INFO.writing.directions}</div>
+      ${Object.entries(WRITING_PROMPTS).map(([k,p])=>`
+        <label class="choice ${e.prompt===k?'sel':''}" style="align-items:flex-start" onclick="cur.essay.prompt='${k}';saveCur();renderWriting()">
+          <span class="letter">${k}</span><span class="ctext"><b>${p.label}</b><br>${p.text}</span></label>`).join('')}
+      <div style="display:flex;justify-content:space-between;margin:16px 0 6px" class="small">
+        <span>${e.prompt ? `選択中：Option ${e.prompt}` : '<span style="color:var(--warn)">↑ まずプロンプトを1つ選んでください</span>'}</span>
+        <span>語数：<b id="wc">${words(e.text)}</b> words（目安 250〜350）</span>
+      </div>
+      <textarea class="essay" id="essay" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Write your essay here...">${esc(e.text)}</textarea>
+    </div></div>
+    <div class="examfoot"><span class="small muted">入力内容は自動保存されます。</span><span class="sp"></span><button class="btn" onclick="confirmEnd()">セクションを終了</button></div>
+  </div>`;
+  const ta = $('#essay');
+  ta.addEventListener('input', () => { cur.essay.text = ta.value; $('#wc').textContent = words(ta.value); saveCur(); });
+}
+
+/* --- highlight in passage --- */
+let hlPop = null;
+function hideHlPop(){ if (hlPop) { hlPop.remove(); hlPop = null; } }
+document.addEventListener('mouseup', ev => {
+  if (ev.target.closest && ev.target.closest('.hlpop')) return;
+  setTimeout(() => {
+    hideHlPop();
+    const pt = $('#ptext'); if (!pt) return;
+    const sel = window.getSelection(); if (!sel.rangeCount || sel.isCollapsed) return;
+    const r = sel.getRangeAt(0); if (!pt.contains(r.commonAncestorContainer)) return;
+    const rect = r.getBoundingClientRect();
+    hlPop = document.createElement('button'); hlPop.className = 'hlpop'; hlPop.textContent = '🖍 ハイライト';
+    hlPop.style.left = Math.max(8, rect.left + rect.width/2 - 50) + 'px'; hlPop.style.top = Math.max(8, rect.top - 40) + 'px';
+    hlPop.onclick = () => { applyHl(r); hideHlPop(); sel.removeAllRanges(); };
+    document.body.appendChild(hlPop);
+  }, 10);
+});
+function applyHl(r){
+  const q = QMAP[step().qs[cur.qIdx]];
+  // wrap each text node fragment inside the range
+  const pt = $('#ptext');
+  const walker = document.createTreeWalker(pt, NodeFilter.SHOW_TEXT);
+  const nodes = []; while (walker.nextNode()) { const t = walker.currentNode; if (r.intersectsNode(t)) nodes.push(t); }
+  nodes.forEach(t => {
+    let s = 0, e = t.length;
+    if (t === r.startContainer) s = r.startOffset;
+    if (t === r.endContainer) e = r.endOffset;
+    if (e <= s) return;
+    const mid = t.splitText(s); mid.splitText(e - s);
+    const m = document.createElement('mark'); mid.parentNode.insertBefore(m, mid); m.appendChild(mid);
+  });
+  cur.hl[q.passage] = pt.innerHTML; saveCur();
+}
+function clearHl(p){ delete cur.hl[p]; saveCur(); renderQuestion(); }
+
+document.addEventListener('keydown', ev => {
+  if (!cur || !location.hash.startsWith('#/exam') || cur.phase !== 'run' || cur.pausedLeft != null) return;
+  if (step().type !== 'section' || $('#modal').innerHTML) return;
+  if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName) || ev.ctrlKey || ev.metaKey || ev.altKey) return;
+  const k = ev.key.toUpperCase();
+  if (L.includes(k)) choose(k);
+  else if (ev.key === 'ArrowRight') go(1);
+  else if (ev.key === 'ArrowLeft') go(-1);
+});
+
+/* =====================================================================
+ *  SCORING
+ * ===================================================================== */
+function score(a){
+  const rows = [];
+  a.steps.forEach(s => (s.qs||[]).forEach(n => {
+    const q = QMAP[n]; const ua = a.answers[n];
+    rows.push({n, q, ua, st: !ua ? 'om' : ua === q.ans ? 'ok' : 'ng', conf: a.conf[n], flag: a.flags[n]});
+  }));
+  const agg = list => { const ok = list.filter(r=>r.st==='ok').length, ng = list.filter(r=>r.st==='ng').length, om = list.filter(r=>r.st==='om').length;
+                        return {ok, ng, om, total:list.length, raw: ok - ng/4, pct: list.length ? Math.round(ok*100/list.length) : 0}; };
+  const bySec = {}; ['verbal','quant','reading'].forEach(k => { const l = rows.filter(r=>r.q.sec===k); if (l.length) bySec[k] = agg(l); });
+  const byTopic = {};
+  rows.forEach(r => { const t = r.q.sec==='quant' ? 'Math' : r.q.topic; (byTopic[t] = byTopic[t] || []).push(r); });
+  return {rows, all: agg(rows), bySec, byTopic: Object.fromEntries(Object.entries(byTopic).map(([k,v])=>[k, agg(v)]))};
+}
+const SEC_LABEL = {verbal:'Verbal（語彙・類推）', quant:'Quantitative（数学）', reading:'Reading（長文読解）'};
+const fmtRaw = x => (Math.round(x*100)/100).toString();
+
+/* =====================================================================
+ *  HISTORY
+ * ===================================================================== */
+function renderHistory(){
+  const list = attempts();
+  app.innerHTML = `<h1>テスト結果・解説</h1>
+    <p class="muted">過去に受けた模試の結果です。クリックすると、各問題の正誤と解説を確認できます。</p>
+    ${list.length ? `<div class="card" style="padding:0;overflow:auto"><table>
+      <tr><th class="l">受験日時</th><th class="l">内容</th><th>正解数</th><th>正答率</th><th>素点</th><th></th></tr>
+      ${list.map(a => { const s = score(a); return `<tr>
+        <td class="l">${fmtDate(a.date)}${a.name?`<div class="small muted">${esc(a.name)}</div>`:''}</td>
+        <td class="l">${esc(a.planName)}</td>
+        <td>${s.all.total ? `${s.all.ok} / ${s.all.total}` : '—'}</td>
+        <td>${s.all.total ? s.all.pct+'%' : '—'}</td>
+        <td>${s.all.total ? fmtRaw(s.all.raw) : '—'}</td>
+        <td><a href="#/result/${a.id}">結果と解説を見る ›</a></td></tr>`; }).join('')}
+    </table></div>` : `<div class="card">まだ受験記録がありません。<a href="#/home">模試を受ける</a></div>`}
+    ${list.length ? `<h2>苦手分析（全受験の合計）</h2>${weakness(list)}` : ''}
+    <h2>データの管理</h2>
+    <div class="card small">結果はこのブラウザ内（localStorage）に保存されています。別の端末に移したい場合は書き出し／読み込みを使ってください。
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn sec" onclick="exportData()">結果を書き出す（JSON）</button>
+        <label class="btn sec">結果を読み込む<input type="file" accept=".json" style="display:none" onchange="importData(this.files[0])"></label>
+      </div></div>`;
+}
+function weakness(list){
+  const t = {}; const wrongCount = {};
+  list.forEach(a => score(a).rows.forEach(r => {
+    const k = r.q.sec==='quant' ? 'Math' : r.q.topic; t[k] = t[k] || {ok:0,total:0}; t[k].total++; if (r.st==='ok') t[k].ok++;
+    if (r.st !== 'ok') wrongCount[r.n] = (wrongCount[r.n]||0) + 1;
+  }));
+  const ws = Object.entries(wrongCount).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  return `<div class="card">${topicTable(Object.fromEntries(Object.entries(t).map(([k,v])=>[k,{...v,pct:Math.round(v.ok*100/v.total)}])))}
+    ${ws.length ? `<h3>よく間違える問題</h3><div>${ws.map(([n,c])=>`<span class="tag ng">Q${n}（${c}回）</span>`).join(' ')}</div>
+      <div style="margin-top:10px"><button class="btn" onclick="retry([${ws.map(w=>w[0]).join(',')}],'よく間違える問題の解き直し')">これらを解き直す</button></div>` : ''}</div>`;
+}
+function topicTable(bt){
+  return `<table><tr><th class="l">分野</th><th>正解</th><th style="width:45%">正答率</th></tr>
+    ${Object.entries(bt).map(([k,v])=>`<tr><td class="l">${esc(k)}</td><td>${v.ok} / ${v.total}</td>
+      <td><div style="display:flex;align-items:center;gap:8px"><div class="bar" style="flex:1"><div style="width:${v.pct}%;background:${v.pct>=80?'var(--ok)':v.pct>=60?'var(--navy2)':'var(--ng)'}"></div></div><span>${v.pct}%</span></div></td></tr>`).join('')}</table>`;
+}
+function exportData(){
+  const blob = new Blob([JSON.stringify(attempts(), null, 1)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'ssat-mock-results.json'; a.click();
+}
+function importData(file){
+  if (!file) return;
+  file.text().then(t => { const inc = JSON.parse(t); const list = attempts(); const ids = new Set(list.map(a=>a.id));
+    inc.forEach(a => { if (!ids.has(a.id)) list.push(a); }); list.sort((a,b)=>b.date-a.date); store(LS_ATT, list); renderHistory(); })
+    .catch(() => alert('読み込みに失敗しました'));
+}
+
+/* =====================================================================
+ *  RESULT DETAIL
+ * ===================================================================== */
+let resultFilter = 'all';
+function renderResult(id){
+  const a = attempts().find(x => x.id === id);
+  if (!a) { app.innerHTML = '<div class="card">結果が見つかりません。<a href="#/history">一覧へ</a></div>'; return; }
+  const s = score(a);
+  const hasMC = s.all.total > 0;
+  const confOkNg = s.rows.filter(r=>r.conf==='○' && r.st==='ng');
+  const confLucky = s.rows.filter(r=>(r.conf==='△'||r.conf==='Skip') && r.st==='ok');
+  const wrongNs = s.rows.filter(r=>r.st!=='ok').map(r=>r.n);
+  const wStep = a.steps.find(x=>x.type==='writing');
+
+  app.innerHTML = `
+    <div class="small"><a href="#/history">‹ テスト結果一覧</a></div>
+    <h1>結果：${esc(a.planName)}</h1>
+    <div class="muted small">${fmtDate(a.date)}${a.name ? '　受験者：'+esc(a.name) : ''}</div>
+    ${hasMC ? `
+    <div class="card"><div class="kpi">
+      <div>正解数<b>${s.all.ok} / ${s.all.total}</b></div>
+      <div>正答率<b>${s.all.pct}%</b></div>
+      <div>素点（+1 / −¼）<b>${fmtRaw(s.all.raw)}</b></div>
+      <div>不正解 / 無回答<b>${s.all.ng} / ${s.all.om}</b></div>
+    </div></div>
+    <h2>セクション別</h2>
+    <div class="card" style="overflow:auto"><table>
+      <tr><th class="l">セクション</th><th>正解</th><th>不正解</th><th>無回答</th><th>正答率</th><th>素点</th></tr>
+      ${Object.entries(s.bySec).map(([k,v])=>`<tr><td class="l">${SEC_LABEL[k]}</td><td>${v.ok}</td><td>${v.ng}</td><td>${v.om}</td><td>${v.pct}%</td><td>${fmtRaw(v.raw)}</td></tr>`).join('')}
+    </table>
+    <h3>時間の使い方</h3>
+    <table><tr><th class="l">パート</th><th>使用時間</th><th>制限時間</th></tr>
+      ${a.steps.filter(x=>x.type!=='break').map(x=>`<tr><td class="l">${esc(x.label)}</td><td>${x.used!=null?fmt(x.used):'—'}</td><td>${fmt(x.time)}</td></tr>`).join('')}</table>
+    <p class="small muted">※ 素点は「正解 +1、不正解 −¼、無回答 0」で計算した参考値です（本番のスケールスコアとは異なります）。</p></div>
+    <h2>分野別の正答率</h2><div class="card">${topicTable(s.byTopic)}</div>
+    ${(confOkNg.length || confLucky.length) ? `<h2>自信度の分析</h2><div class="card small">
+      ${confOkNg.length ? `<p>⚠️ <b>自信（○）があったのに不正解：</b>${confOkNg.map(r=>`<a href="#q${r.n}" class="tag ng">Q${r.n}</a>`).join(' ')}<br><span class="muted">思い込み・単語の覚え違いの可能性。最優先で復習しましょう。</span></p>` : ''}
+      ${confLucky.length ? `<p>🤔 <b>自信なし（△/Skip）で正解：</b>${confLucky.map(r=>`<a href="#q${r.n}" class="tag ok">Q${r.n}</a>`).join(' ')}<br><span class="muted">たまたま正解した可能性があります。解説で根拠を確認しましょう。</span></p>` : ''}
+    </div>` : ''}
+    <h2>問題ごとの解説</h2>
+    <div class="filters" id="filters"></div>
+    ${wrongNs.length ? `<div style="margin:8px 0"><button class="btn" onclick="retry([${wrongNs.join(',')}],'間違えた問題の解き直し')">✍️ 間違えた・無回答の問題（${wrongNs.length}問）を解き直す</button></div>` : ''}
+    <div id="qlist"></div>` : ''}
+    ${wStep ? `<h2>Writing Sample</h2>${writingResult(a)}` : ''}
+    <div style="margin-top:30px"><button class="btn danger" onclick="delAttempt('${a.id}')">この結果を削除</button></div>`;
+  if (hasMC) drawList(a, s);
+}
+function drawList(a, s){
+  const F_ = [['all','すべて'],['ng','不正解'],['om','無回答'],['wrongall','不正解＋無回答'],['flag','🚩見直しマーク'],['tri','自信度 △/Skip'],['ok','正解']];
+  const cnt = k => s.rows.filter(r=>match(r,k)).length;
+  $('#filters').innerHTML = F_.map(([k,l])=>`<button class="${resultFilter===k?'on':''}" onclick="resultFilter='${k}';drawList(window._a,window._s)">${l}（${cnt(k)}）</button>`).join('');
+  window._a = a; window._s = s;
+  const rows = s.rows.filter(r=>match(r,resultFilter));
+  let lastPas = null;
+  $('#qlist').innerHTML = rows.length ? rows.map(r => qcard(r.q, r, resultFilter !== 'all' && resultFilter !== 'ok')).join('') : '<p class="muted">該当する問題はありません。</p>';
+}
+function match(r,k){
+  return k==='all' || (k==='wrongall' ? r.st!=='ok' : k==='flag' ? !!r.flag : k==='tri' ? (r.conf==='△'||r.conf==='Skip') : r.st===k);
+}
+function qcard(q, r, open){
+  const st = r ? r.st : null;
+  const pas = q.passage ? PASSAGES[q.passage] : null;
+  return `<details class="qcard" id="q${q.n}" ${open?'open':''}>
+    <summary>
+      <b>Q${q.n}</b>
+      ${st ? `<span class="tag ${st}">${st==='ok'?'○ 正解':st==='ng'?'✕ 不正解':'— 無回答'}</span>` : ''}
+      <span class="tag">${esc(q.sec==='quant' ? 'Math: '+q.topic : q.topic)}</span>
+      ${r && r.conf ? `<span class="tag">自信度 ${r.conf}</span>` : ''}${r && r.flag ? '<span class="tag">🚩</span>' : ''}
+      <span class="small muted" style="flex:1;min-width:200px">${q.sec==='verbal' ? esc(q.short) : esc(plain(q.prompt).slice(0,70))+'…'}</span>
+      ${r ? `<span class="small">あなた：<b>${r.ua||'—'}</b>／正解：<b>${q.ans}</b></span>` : `<span class="small">正解：<b>${q.ans}</b></span>`}
+    </summary>
+    <div class="body">
+      ${pas ? `<details class="passbox"><summary><b>${esc(pas.title)}</b>（本文を表示）</summary>${pas.html}</details>` : ''}
+      <div class="prompt" style="font-size:16.5px">${q.prompt}</div>
+      ${q.choices.map((c,i)=>{ const l=L[i]; const cls = l===q.ans ? 'correct' : (r && r.ua===l ? 'wrong' : '');
+        return `<div class="rchoice ${cls}">(${l}) ${c} ${l===q.ans?' ✅':''}${r && r.ua===l && l!==q.ans?' ← あなたの解答':''}</div>`; }).join('')}
+      <div class="expl"><b>解説</b>　正解：(${q.ans})<br>${q.expl}</div>
+    </div></details>`;
+}
+function writingResult(a){
+  const e = a.essay || {}; const p = WRITING_PROMPTS[e.prompt];
+  const checks = a.checks || {};
+  return `<div class="card">
+    <p><b>選択したプロンプト：</b>${p ? `${p.label}<br><span class="small">${p.text}</span>` : '（未選択）'}</p>
+    <p><b>語数：</b>${words(e.text)} words <span class="small muted">（目安 250〜350語）</span></p>
+    <div style="white-space:pre-wrap;background:#fcfcfa;border:1px solid var(--line);border-radius:6px;padding:14px;font-family:Georgia,serif;max-height:420px;overflow:auto">${esc(e.text||'（未記入）')}</div>
+    <div style="margin-top:8px"><button class="btn sec" onclick="navigator.clipboard.writeText(${esc(JSON.stringify(e.text||''))}).then(()=>alert('コピーしました'))">エッセイをコピー</button></div>
+    <h3>セルフチェック（保護者の方と一緒に確認）</h3>
+    ${WRITING_CHECKS.map((c,i)=>`<label style="display:block;margin:4px 0"><input type="checkbox" ${checks[i]?'checked':''} onchange="setCheck('${a.id}',${i},this.checked)"> ${c}</label>`).join('')}
+    <h3>採点基準と構成例（25分で書き切る完成度：250〜350語程度で最後まで完結しているか）</h3>
+    <div style="overflow:auto"><table><tr><th>段落</th><th>役割</th><th>目標語数</th><th>時間配分</th><th class="l">書くべき内容</th></tr>
+      ${WRITING_RUBRIC.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td class="l">${r[4]}</td></tr>`).join('')}</table></div>
+  </div>`;
+}
+function setCheck(id,i,v){ const list = attempts(); const a = list.find(x=>x.id===id); a.checks = a.checks||{}; a.checks[i] = v; store(LS_ATT, list); }
+function delAttempt(id){ if (!confirm('この結果を削除しますか？')) return; store(LS_ATT, attempts().filter(a=>a.id!==id)); location.hash = '#/history'; }
+function retry(ns, name){
+  ns = [...new Set(ns)].sort((a,b)=>a-b);
+  const secOf = n => QMAP[n].sec;
+  const steps = []; ['verbal','quant','reading'].forEach(k => { const qs = ns.filter(n=>secOf(n)===k); if (qs.length) {
+    const per = k==='verbal' ? 36 : k==='quant' ? 75 : 86; // 本番と同程度の1問あたり時間（秒）
+    steps.push({type:'section', key:k, label:`${name}：${SECTION_INFO[k].name}`, qs, time: Math.max(60, Math.ceil(qs.length*per/60)*60)}); } });
+  startExam(null, {name, steps});
+}
+
+/* =====================================================================
+ *  REVIEW (all questions)
+ * ===================================================================== */
+function renderReview(){
+  const secs = [['verbal','Section 1: Verbal Section（Q1–Q20）'],['quant','Section 2: Quantitative Section（Q21–Q36）'],['reading','Section 3: Reading Section（Q37–Q50）']];
+  app.innerHTML = `<h1>問題と解説一覧</h1>
+    <p class="muted">全問題を確認できます。各問題をクリックすると選択肢・正解・解説が表示されます（答えを考えてから開きましょう）。</p>
+    <div class="filters">${secs.map(([k,l])=>`<a class="tag" href="javascript:document.getElementById('sec-${k}').scrollIntoView()">${l.split('（')[0]}</a>`).join('')}<a class="tag" href="javascript:document.getElementById('sec-writing').scrollIntoView()">Section 4: Writing</a></div>
+    ${secs.map(([k,l])=>`<h2 id="sec-${k}">${l}</h2><div class="directions">${SECTION_INFO[k].directions}</div>
+      ${k==='reading' ? Object.entries(PASSAGES).map(([pk,p])=>`<h3>${esc(p.title)} <span class="small muted">${p.jp}</span></h3><div class="passbox">${p.html}</div>
+        ${Q.filter(q=>q.passage===pk).map(q=>qcard(q,null,false)).join('')}`).join('')
+      : Q.filter(q=>q.sec===k).map(q=>qcard(q,null,false)).join('')}`).join('')}
+    <h2 id="sec-writing">Section 4: Writing Sample（25分）</h2>
+    <div class="card"><div class="directions">${SECTION_INFO.writing.directions}</div>
+      ${Object.values(WRITING_PROMPTS).map(p=>`<p><b>${p.label}</b><br>${p.text}</p>`).join('')}
+      <h3>採点基準と構成例</h3>
+      <div style="overflow:auto"><table><tr><th>段落</th><th>役割</th><th>目標語数</th><th>時間配分</th><th class="l">書くべき内容</th></tr>
+      ${WRITING_RUBRIC.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td class="l">${r[4]}</td></tr>`).join('')}</table></div></div>`;
+}
+
+/* =====================================================================
+ *  GUIDE
+ * ===================================================================== */
+function renderGuide(){
+  app.innerHTML = `<h1>SSAT 本番情報（Upper Level）</h1>
+  <div class="card">
+    <h3 style="margin-top:0">本番の科目の順番と時間配分</h3>
+    <p class="small">全6セクション・合計3時間10分（休憩含む）。どの受験方式（PC・紙）でも、科目の順番と制限時間は同一です。</p>
+    <div style="overflow:auto"><table>
+      <tr><th>順番</th><th>セクション</th><th>問題数</th><th>制限時間</th><th class="l">内容・注意点</th></tr>
+      <tr><td>Part 1</td><td>Writing Sample</td><td>1題（2題から選択）</td><td>25分</td><td class="l">Personal（意見論述）または Creative/General から1つを選んで執筆（採点対象外だが志望校へ送付）</td></tr>
+      <tr><td><i>休憩①</i></td><td><i>Break 1</i></td><td>—</td><td>5〜10分</td><td class="l">紙受験は5分、PC受験は10分</td></tr>
+      <tr><td>Part 2</td><td>Quantitative 1（数学①）</td><td>25問</td><td>30分</td><td class="l">1問あたり約1分12秒ペース。電卓使用不可</td></tr>
+      <tr><td>Part 3</td><td>Reading（長文読解）</td><td>40問</td><td>40分</td><td class="l">約8つのパッセージ。1問1分ペースで最も時間との戦いになる</td></tr>
+      <tr><td><i>休憩②</i></td><td><i>Break 2</i></td><td>—</td><td>10分</td><td class="l">軽食やストレッチでリフレッシュ</td></tr>
+      <tr><td>Part 4</td><td>Verbal（語彙・類推）</td><td>60問</td><td>30分</td><td class="l">前半30問が Synonyms、後半30問が Analogies。1問30秒のスピード勝負</td></tr>
+      <tr><td>Part 5</td><td>Quantitative 2（数学②）</td><td>25問</td><td>30分</td><td class="l">数学①と合算（計50問）して数学スコアが算出される</td></tr>
+      <tr><td>Part 6</td><td>Experimental（実験問題）</td><td>16問</td><td>15分</td><td class="l">スコアには反映されないダミーセクション</td></tr>
+    </table></div>
+  </div>
+  <div class="card small">
+    <h3 style="margin-top:0">この模試での練習のコツ</h3>
+    <ul>
+      <li><b>本番順シミュレーション</b>では、数学（Q21〜Q36）を前半8問と後半8問の2回に分割し、間に Reading と Verbal を挟みます。本番の疲労度や切り替えの感覚を体験できます。</li>
+      <li>Prometric（PC受験）の場合、Writing はキーボード入力です。この模試の Writing 画面はスペルチェック（自動補正）オフにしてあるので、25分間タイピングする練習に使えます。</li>
+      <li>PC受験では長文を画面上でスクロールしながら読み、ハイライト機能を使います。Reading ではドラッグで本文をハイライトする練習をしておきましょう。</li>
+    </ul>
+  </div>`;
+}
+
+route();
+</script>
+</body>
+</html>
