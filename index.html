@@ -2,8 +2,16 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1f3a5f">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SSAT模試">
 <title>SSAT 模擬試験（Upper Level 対策）</title>
 <style>
   :root{
@@ -123,6 +131,28 @@
   .flash .wd{max-width:640px}
   .choice.vq.correct{background:#e6f4ea;border-color:var(--ok)} .choice.vq.correct .letter{background:var(--ok);border-color:var(--ok);color:#fff}
   .choice.vq.wrong{background:#fce8e6;border-color:var(--ng)} .choice.vq.wrong .letter{background:var(--ng);border-color:var(--ng);color:#fff}
+  /* PWA / mobile */
+  #topbar{height:auto;min-height:52px;padding-top:env(safe-area-inset-top);padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+  .examhead{padding-top:max(8px,env(safe-area-inset-top))}
+  .examfoot{padding-bottom:max(10px,env(safe-area-inset-bottom))}
+  .exam{height:100vh;height:100dvh}
+  main{padding-bottom:max(80px,env(safe-area-inset-bottom))}
+  @media (max-width:600px){
+    #topbar{flex-wrap:wrap;gap:0;padding-bottom:4px}
+    #topbar .brand{width:100%;padding:8px 0 2px}
+    #topbar nav{width:100%;flex-wrap:wrap;overflow:visible;gap:2px}
+    #topbar nav a{padding:5px 9px;font-size:13px}
+    .examhead{gap:8px;padding-left:10px;padding-right:10px}
+    .examhead .small{display:none}
+    .timer{font-size:17px;min-width:70px}
+    .hbtn{padding:3px 7px;font-size:12px}
+    .prompt{font-size:17px} .prompt .word{font-size:23px}
+    .choice{font-size:16px;padding:11px 10px}
+    .examfoot .btn{padding:9px 12px;font-size:14px}
+    .flash .fw{font-size:32px}
+    h1{font-size:21px}
+    main{padding:16px 12px 80px}
+  }
 </style>
 </head>
 <body>
@@ -383,6 +413,7 @@ function renderHome(){
     <h1>SSAT 模擬試験（Upper Level 対策）</h1>
     <p class="muted">本番の PC 受験（CBT）に近い形式で解く模試です。
       制限時間はセクションごとに自動で計測され、時間切れになると自動で次のセクションに進みます。</p>
+    ${installCard()}
     ${cur ? `<div class="card" style="border-color:var(--warn);background:#fffaf0">
         <b>受験途中の模試があります</b>：${esc(cur.planName)}（${esc(cur.steps[cur.stepIdx]?.label||'')}）
         <div class="small muted">※ 制限時間は中断中もカウントされています（本番同様）。</div>
@@ -623,21 +654,29 @@ function renderWriting(){
 }
 
 /* --- highlight in passage --- */
-let hlPop = null;
+let hlPop = null, hlTimer = null;
 function hideHlPop(){ if (hlPop) { hlPop.remove(); hlPop = null; } }
+function maybeShowHlPop(){
+  hideHlPop();
+  const pt = $('#ptext'); if (!pt) return;
+  const sel = window.getSelection(); if (!sel.rangeCount || sel.isCollapsed) return;
+  const r = sel.getRangeAt(0); if (!pt.contains(r.commonAncestorContainer)) return;
+  const rect = r.getBoundingClientRect();
+  hlPop = document.createElement('button'); hlPop.className = 'hlpop'; hlPop.textContent = '🖍 ハイライト';
+  hlPop.style.left = Math.max(8, Math.min(window.innerWidth - 120, rect.left + rect.width/2 - 50)) + 'px';
+  hlPop.style.top = (rect.top > 50 ? rect.top - 44 : rect.bottom + 8) + 'px';
+  const go = e => { e.preventDefault(); applyHl(r); hideHlPop(); sel.removeAllRanges(); };
+  hlPop.addEventListener('pointerdown', go); hlPop.addEventListener('mousedown', e => e.preventDefault());
+  document.body.appendChild(hlPop);
+}
 document.addEventListener('mouseup', ev => {
   if (ev.target.closest && ev.target.closest('.hlpop')) return;
-  setTimeout(() => {
-    hideHlPop();
-    const pt = $('#ptext'); if (!pt) return;
-    const sel = window.getSelection(); if (!sel.rangeCount || sel.isCollapsed) return;
-    const r = sel.getRangeAt(0); if (!pt.contains(r.commonAncestorContainer)) return;
-    const rect = r.getBoundingClientRect();
-    hlPop = document.createElement('button'); hlPop.className = 'hlpop'; hlPop.textContent = '🖍 ハイライト';
-    hlPop.style.left = Math.max(8, rect.left + rect.width/2 - 50) + 'px'; hlPop.style.top = Math.max(8, rect.top - 40) + 'px';
-    hlPop.onclick = () => { applyHl(r); hideHlPop(); sel.removeAllRanges(); };
-    document.body.appendChild(hlPop);
-  }, 10);
+  setTimeout(maybeShowHlPop, 10);
+});
+// スマホ・タブレット：文字を長押しで選択 → 選択が落ち着いたらボタンを表示
+document.addEventListener('selectionchange', () => {
+  if (!$('#ptext')) return;
+  clearTimeout(hlTimer); hlTimer = setTimeout(maybeShowHlPop, 450);
 });
 function applyHl(r){
   const q = QMAP[step().qs[cur.qIdx]];
@@ -1098,6 +1137,37 @@ function renderGuide(){
       <li>PC受験では長文を画面上でスクロールしながら読み、ハイライト機能を使います。Reading ではドラッグで本文をハイライトする練習をしておきましょう。</li>
       <li>Verbal は1問30秒。<a href="#/vocab">単語ドリル</a>の「本番ペース」モードでスピードに慣れておきましょう。</li>
     </ul>
+  </div>`;
+}
+
+/* =====================================================================
+ *  PWA（ホーム画面に追加してアプリとして使う）
+ * ===================================================================== */
+const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const isIOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isAndroid = () => /Android/.test(navigator.userAgent);
+let installEvt = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; const h = location.hash; if (!h || h === '#/' || h === '#/home') renderHome(); });
+window.addEventListener('appinstalled', () => { installEvt = null; });
+function doInstall(){ if (!installEvt) return; installEvt.prompt(); installEvt.userChoice.finally(() => { installEvt = null; renderHome(); }); }
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
+function installCard(){
+  if (isStandalone() || load('ssatMock.hideInstall', false)) return '';
+  const ios = isIOS(), android = isAndroid();
+  const how = ios
+    ? `<ol style="margin:6px 0 0;padding-left:20px"><li><b>Safari</b> でこのページを開く（Chrome などでは追加できない場合があります）</li><li>画面下（iPad は右上）の <b>共有ボタン</b>（□に↑のマーク）をタップ</li><li><b>「ホーム画面に追加」</b> →右上の <b>「追加」</b> をタップ</li></ol>`
+    : android
+    ? (installEvt ? `<button class="btn" style="margin-top:8px" onclick="doInstall()">📲 アプリとしてインストール</button>`
+                  : `<ol style="margin:6px 0 0;padding-left:20px"><li><b>Chrome</b> でこのページを開く</li><li>右上の <b>︙（メニュー）</b> をタップ</li><li><b>「ホーム画面に追加」</b>（または「アプリをインストール」）→ <b>「インストール」</b></li></ol>`)
+    : (installEvt ? `<button class="btn" style="margin-top:8px" onclick="doInstall()">💻 アプリとしてインストール</button>` : `<div class="small muted">スマホ・タブレットでこのページを開くと、ホーム画面に追加する手順が表示されます。</div>`);
+  return `<div class="card" style="border-color:var(--navy2);background:#f3f7fd">
+    <b>📱 スマホ・タブレットのアプリとして使えます</b>
+    <div class="small">ホーム画面にアイコンを追加すると、アプリのように全画面で起動し、一度開けばオフラインでも使えます。</div>
+    ${how}
+    <div class="small muted" style="margin-top:8px">※ ホーム画面のアプリとブラウザでは、受験結果や単語の記録が別々に保存されます（特に iPhone/iPad）。以後はホーム画面のアプリから使うのがおすすめです。記録を移したいときは「テスト結果・解説」の書き出し／読み込みを使ってください。</div>
+    <div style="text-align:right"><button class="btn sec" style="padding:4px 12px;font-size:13px" onclick="store('ssatMock.hideInstall',true);renderHome()">この案内を閉じる</button></div>
   </div>`;
 }
 
